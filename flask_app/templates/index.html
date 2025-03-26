@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Soil Type Prediction</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      text-align: center;
+      display: grid;
+      grid-template-rows: auto 1fr;
+      height: 100vh;
+      overflow: hidden;
+      background-color: #f5f5f5;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(0, 0, 0, 0.8);
+      color: white;
+      padding: 10px 20px;
+      z-index: 2;
+    }
+    .upload-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.custom-upload-button {
+    background-color: #4caf50;
+    color: white;
+    padding: 12px 24px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+    display: inline-block;
+    text-align: center;
+}
+
+.custom-upload-button:hover {
+    background-color: #45a049;
+}
+
+.file-name-display {
+    margin-top: 10px;
+    font-style: italic;
+    color: #333;
+}
+
+
+    .logo {
+      font-size: larger;
+      font-weight: bold;
+    }
+
+    .header-buttons button {
+      background: #45a049;
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      cursor: pointer;
+      font-size: 16px;
+      border-radius: 5px;
+    }
+
+    .container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100%;
+    }
+
+    form {
+      background: rgba(255, 255, 255, 0.9);
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.2);
+      width: 400px;
+    }
+
+    input[type="file"] {
+      margin: 20px 0;
+    }
+
+    button {
+      margin-top: 20px;
+      background: #4caf50;
+      color: white;
+      border: none;
+      padding: 12px;
+      font-size: 16px;
+      cursor: pointer;
+      border-radius: 5px;
+      width: 100%;
+    }
+
+    button:hover {
+      background: #45a049;
+    }
+
+    .result {
+      margin-top: 20px;
+      font-size: 18px;
+      color: green;
+    }
+
+    @media (max-width: 480px) {
+      form {
+        width: 90%;
+      }
+
+    }
+    /* .custom-file-input {
+    background-color: green;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.custom-file-input::-webkit-file-upload-button {
+    appearance: none;
+    background-color: green;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.custom-file-input::-webkit-file-upload-button:hover {
+    background-color: #0056b3;
+} */
+.custom-file-input::file-selector-button {
+  border: 2px solid green;
+  padding: 8px 16px;
+  border-radius: 4px;
+  background-color: green;
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.custom-file-input::file-selector-button:hover {
+  background-color: rgb(118, 120, 118);
+}
+  </style>
+</head>
+
+<body>
+  <header>
+    <div class="logo">🌱 AgriPredict</div>
+    <div class="header-buttons">
+      <!-- <button onclick="goToDashboard()">Dashboard</button> -->
+    </div>
+  </header>
+
+  <div class="container">
+    <form id="imageForm" enctype="multipart/form-data">
+      <h2>Upload Soil Image</h2>
+
+      <input type="file" class="custom-file-input" id="soilImage" name="soilImage" accept="image/*" required />
+      <button type="button" onclick="predictSoil()">Predict Soil Type</button>
+
+      <div class="result" id="predictionResult"></div>
+    </form>
+  </div>
+
+  <script>
+    function displayFileName() {
+    const input = document.getElementById("soilImage");
+    const fileNameDisplay = document.getElementById("fileName");
+
+    if (input.files.length > 0) {
+        fileNameDisplay.textContent = input.files[0].name;
+    } else {
+        fileNameDisplay.textContent = "No file chosen";
+    }
+}
+
+    function goToDashboard() {
+      window.location.href = "https://your-dashboard-url.com";
+    }
+
+    async function predictSoil() {
+      const imageInput = document.getElementById("soilImage");
+      const resultDiv = document.getElementById("predictionResult");
+
+      if (imageInput.files.length === 0) {
+        alert("Please upload a soil image first.");
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append("soilImage", imageInput.files[0]);
+
+      try {
+        const response = await fetch("/predict-soil", {
+          method: "POST",
+          body: formData
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+          resultDiv.innerHTML = `<strong>Predicted Soil Type:</strong> ${result.prediction}`;
+        } else {
+          resultDiv.innerHTML = `<span style="color:red;">Prediction failed: ${result.error}</span>`;
+        }
+      } catch (error) {
+        console.error("Error:", error);
+        resultDiv.innerHTML = `<span style="color:red;">Error connecting to the server.</span>`;
+      }
+    }
+  </script>
+</body>
+</html>

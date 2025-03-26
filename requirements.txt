@@ -1,0 +1,9 @@
+Flask
+flask_cors
+numpy
+pandas
+scikit-learn
+xgboost
+waitress
+pyyaml
+gunicorn  
