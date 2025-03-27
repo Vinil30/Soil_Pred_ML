@@ -7,3 +7,8 @@ xgboost
 waitress
 pyyaml
 gunicorn  
+tensorflow>=2.10.0
+gradio>=3.0.0
+numpy>=1.21.0
+pillow>=9.0.0
+flask>=2.0.0  # (Optional, if you still need Flask)
