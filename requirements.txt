@@ -3,5 +3,5 @@ flask_cors
 numpy
 pandas
 waitress
-tensorflow-cpu==2.15.0
+tensorflow
 pillow>=9.0.0
